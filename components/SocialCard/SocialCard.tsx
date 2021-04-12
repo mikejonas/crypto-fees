@@ -1,6 +1,8 @@
 import React from 'react';
 import Row from './Row';
 import { ProtocolData } from 'data/types';
+import path from 'path';
+import fs from 'fs';
 
 interface SocialCardProps {
   data: ProtocolData[];
@@ -8,8 +10,19 @@ interface SocialCardProps {
 
 const sortByDaily = (a: ProtocolData, b: ProtocolData) => b.oneDay - a.oneDay;
 
+function toBase64(data: any) {
+  const buf = new Buffer(data, 'binary');
+  const string = 'data:application/font-sfnt;base64,' + buf.toString('base64');
+  console.log(string);
+  return string;
+}
+
 const SocialCard: React.FC<SocialCardProps> = ({ data }) => {
   const _data = data.sort(sortByDaily).slice(0, 5);
+
+  const fontPath = path.resolve(process.cwd(), 'SofiaProRegular.ttf');
+  // const fontData = fs.readFileSync(fontPath, 'binary');
+  // const font = toBase64(fontData);
   return (
     <svg
       width="688px"
@@ -19,6 +32,15 @@ const SocialCard: React.FC<SocialCardProps> = ({ data }) => {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
+    <style>{`
+      @font-face {
+          font-family: SofiaProRegular;
+          src: url('${fontPath}');
+      }
+      svg{
+          font-family: SofiaProRegular, sans-serif;
+      }
+      `}</style>
       <defs>
         <path
           d="M3,0 L625,0 C626.656854,-3.04359188e-16 628,1.34314575 628,3 L628,238 L628,238 L0,238 L0,3 C-2.02906125e-16,1.34314575 1.34314575,3.04359188e-16 3,0 Z"
